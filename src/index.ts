@@ -37,10 +37,9 @@ await app.register(swagger, {
 });
 await app.register(swaggerUI, { routePrefix: '/docs', staticCSP: true });
 
-// Multipart (important : avant les routes)
 await app.register(fastifyMultipart, {
     attachFieldsToBody: true,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10 Mo max
+    limits: { fileSize: 10 * 1024 * 1024 }, 
 });
 
 const __filename = fileURLToPath(import.meta.url);
@@ -54,11 +53,9 @@ await app.register(fastifyStatic, {
     }
 });
 
-// Routes
 await app.register(healthRoute);
 await app.register(productsRoute);
 
-// Start server
 app.listen({ port: env.PORT, host: '0.0.0.0' })
     .then(() => app.log.info(`API running on http://localhost:${env.PORT} | docs: /docs`))
     .catch((err) => { app.log.error(err); process.exit(1); });

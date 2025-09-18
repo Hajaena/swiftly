@@ -5,8 +5,6 @@ import { bumpVersion, readProductsCache, writeProductsCache } from '../lib/cache
 import path from 'path';
 
 export default async function (app: FastifyInstance) {
-
-    // Schéma OpenAPI (Swagger) pour /products
     const listSchema = {
         description: 'Recherche produits (cache avec Redis)',
         querystring: {
@@ -42,7 +40,7 @@ export default async function (app: FastifyInstance) {
         const t0 = performance.now();
         const { q, category, min_price, max_price, sort = 'createdAt', order = 'asc', page = 1, page_size = 20 } = req.query as any;
 
-        const where: any = {}; // Filtrage à implémenter
+        const where: any = {}; 
 
         const take = Math.min(Number(page_size), 100);
         const skip = (Number(page) - 1) * take;
@@ -110,19 +108,16 @@ export default async function (app: FastifyInstance) {
         try {
             const data = req.body as any;
 
-            // Récupérer le fichier
             const file = data.image;
             if (!file || !file.filename) {
                 return reply.status(400).send({ message: "Le fichier image est manquant." });
             }
 
-            // Sauvegarder l'image sur le serveur
             const imagePath = `uploads/${Date.now()}-${file.filename}`;
             const dir = imagePath.split('/').slice(0, -1).join('/');
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
             await fs.promises.writeFile(imagePath, await file.toBuffer());
 
-            // Construire un objet “plain” avec uniquement des scalaires
             const formData = {
                 sku: data.sku?.value ?? String(data.sku),
                 name: data.name?.value ?? String(data.name),
@@ -133,7 +128,6 @@ export default async function (app: FastifyInstance) {
                 category: data.category?.value ?? (data.category ? String(data.category) : 'uncategorized')
             };
 
-            // Vérifier si la catégorie existe
             let cat = await app.prisma.category.findUnique({
                 where: { name: formData.category }
             });
@@ -143,7 +137,6 @@ export default async function (app: FastifyInstance) {
                 });
             }
             const publicImageUrl = `/uploads/${path.basename(imagePath)}`;
-            // Créer le produit avec des scalaires
             const product = await app.prisma.product.create({
                 data: {
                     sku: formData.sku,
@@ -166,8 +159,6 @@ export default async function (app: FastifyInstance) {
             return reply.status(500).send({ message: 'Erreur lors de l\'ajout du produit.' });
         }
     });
-
-
 
     // UPDATE
     app.put('/products/:id', async (req) => {
