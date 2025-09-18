@@ -8,27 +8,24 @@ datasource db {
 }
 
 model Category {
-  id        String    @id @default(cuid())
+  id        Int       @id @default(autoincrement())
   name      String    @unique
   products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @map("createdat") @default(now())
+  updatedAt DateTime  @map("updatedat") @updatedAt
 }
 
 model Product {
-  id          String    @id @default(cuid())
-  sku         String    @unique
+  id          Int      @id @default(autoincrement())
+  sku         String   @unique
   name        String
   description String?
-  price       Decimal   
-//   @db.Numeric
-  currency    String    @default("EUR")
-  stock       Int       @default(0)
-  categoryId  String
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([categoryId, price])
-  @@index([createdAt])
+  price       Float
+  currency    String   @default("EUR")
+  stock       Int      @default(0)
+  categoryId  Int
+  imageurl    String?  @map("imageurl")
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now()) @map("createdat")
+  updatedAt   DateTime @updatedAt @map("updatedat")
 }

@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 import Redis from 'ioredis'
-import { env } from '../env.js'
+import { env } from '../env'
 import { FastifyInstance } from 'fastify'
 
 declare module 'fastify' {

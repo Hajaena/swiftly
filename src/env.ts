@@ -14,4 +14,7 @@ export const env = {
     CACHE_ENABLED: (required('CACHE_ENABLED', '1') === '1'),
     CACHE_TTL_SECONDS: Number(required('CACHE_TTL_SECONDS', '60')),
     NODE_ENV: required('NODE_ENV', 'development')
+
 } as const;
+console.log('API_KEY:', process.env.API_KEY);
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
